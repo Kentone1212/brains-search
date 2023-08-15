@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Brains Search</title>
+</head>
+
+<body>
+<h1>Brains Search (仮)</h1>
+
+<form id="form">
+<input type="text" id="searchText">
+<button id='searchButton'>検索</button>
+</form>
+<br>
+<p>v0.1&emsp;&emsp;Kentone</p>
+
+<script type="text/javascript">
+document.getElementById("form").addEventListener("submit", (e) => {
+  e.preventDefault();
+});
+
+document.getElementById("searchButton").addEventListener("click", (e) => {
+    var searchText = document.getElementById("searchText").value;
+
+    var scrapbox = "site%3Ascrapbox.io";
+    var notion = "site%3Anotion.site";
+    var obsidian = "site%3Apublish.obsidian.md";
+
+    var sites = [scrapbox, notion, obsidian];
+
+    var q = encodeURIComponent(searchText) + "+" + sites.join("+OR+");
+
+    window.location.href = "https://www.google.com/search?q=" + q;
+});
+
+</script>
+</body>
+</html>
