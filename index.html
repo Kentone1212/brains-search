@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Brains Search</title>
-  
+
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XP0BC1ELPM"></script>
 <script>
@@ -15,34 +15,117 @@
 </script>
 </head>
 
+<script type="text/javascript">
+if (localStorage.getItem("siteDomainsSave") == null || localStorage.getItem("siteChecksSave") == null){
+  var siteDomains = ["scrapbox.io", "notion.site", "publish.obsidian.md"];
+  var siteChecks = [true, true, true];
+}
+else{
+  const siteDomainsSave = localStorage.getItem("siteDomainsSave");
+  var siteDomains = JSON.parse(siteDomainsSave);
+  const siteChecksSave = localStorage.getItem("siteChecksSave");
+  var siteChecks = JSON.parse(siteChecksSave);
+}
+</script>
+
 <body>
 <h1>Brains Search (仮)</h1>
 
 <form id="form">
 <input type="text" id="searchText">
-<button id='searchButton'>検索</button>
+<button id='searchButton'>Search</button>
 </form>
 <br>
-<p>v0.1&emsp;&emsp;Kentone</p>
+<details>
+  <summary>Search Settings</summary>
+  &emsp;<span id = 'settings'></span>
+  <br>
+  <details>
+    <summary>Edit</summary>
+    &emsp;<input type="text" id="addText">
+    <button id='addButton'>Add Domain</button>
+    <br>
+    <br>
+    <span id = 'edit'></span>
+    <br>
+    &emsp;<button id='reset'>Reset</button>
+  </details>
+</details>
+
+<p>v0.2&emsp;&emsp;Kentone</p>
 
 <script type="text/javascript">
+changeSites();
+
 document.getElementById("form").addEventListener("submit", (e) => {
   e.preventDefault();
 });
 
 document.getElementById("searchButton").addEventListener("click", (e) => {
-    var searchText = document.getElementById("searchText").value;
+  var searchText = document.getElementById("searchText").value;
+  let sites = [];
+  var numStr = [];
 
-    var scrapbox = "site%3Ascrapbox.io";
-    var notion = "site%3Anotion.site";
-    var obsidian = "site%3Apublish.obsidian.md";
+  for (let i=0; i<siteDomains.length; i++){
+    numStr[i] = String(i);
+  }
 
-    var sites = [scrapbox, notion, obsidian];
+  for (let i=0; i<siteDomains.length; i++){
+    if(document.getElementById(numStr[i]).checked == true){
+      sites.push(siteDomains[i]);
+    }
+  }
 
-    var q = encodeURIComponent(searchText) + "+" + sites.join("+OR+");
+  const q = encodeURIComponent(searchText) + "+" + sites.join("+OR+");
 
-    window.location.href = "https://www.google.com/search?q=" + q;
+  window.location.href = "https://www.google.com/search?q=" + q;
 });
+
+document.getElementById("addButton").addEventListener("click", (e) => {
+  var addText = document.getElementById("addText").value;
+
+  siteDomains.push(addText);
+  siteChecks.push(false);
+
+  changeSites();
+});
+
+document.getElementById("reset").addEventListener("click", (e) => {
+  siteDomains = ["scrapbox.io", "notion.site", "publish.obsidian.md"];
+  siteChecks = [false, false, false];
+
+  changeSites();
+});
+
+function changeSites() {
+  var settingsStr = "";
+  for (let i=0; i<siteDomains.length; i++){
+    if (i%3 == 0 && i != 0) settingsStr = settingsStr + "<br>";
+    settingsStr = settingsStr + "<input type='checkbox' id='"+String(i)+"'' checked='"+siteChecks[i]+"' /><label>"+siteDomains[i]+"</label>&emsp;";
+  }
+  document.getElementById("settings").innerHTML = settingsStr;
+
+  var editStr = "";
+  for (let i=0; i<siteDomains.length; i++){
+    editStr = editStr + "&emsp;<button id='"+String(i)+"' onclick='deleteSite(event)'>Delete</button>&emsp;" + siteDomains[i] + "<br>";
+  }
+  document.getElementById("edit").innerHTML = editStr;
+
+  const siteDomainsSave = JSON.stringify(siteDomains);
+  const siteChecksSave = JSON.stringify(siteChecks);
+
+  localStorage.setItem('siteDomainsSave', siteDomainsSave);
+  localStorage.setItem('siteChecksSave', siteChecksSave);
+}
+
+function deleteSite(e) {
+  let buttonId = e.target.id;
+
+  siteDomains.splice(buttonId,1);
+  siteChecks.splice(buttonId,1);
+
+  changeSites();
+}
 
 </script>
 </body>
