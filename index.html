@@ -52,7 +52,7 @@ else{
   </details>
 </details>
 
-<p>v0.2&emsp;&emsp;Kentone</p>
+<p>v0.3&emsp;&emsp;Kentone</p>
 
 <script type="text/javascript">
 changeSites();
@@ -72,11 +72,11 @@ document.getElementById("searchButton").addEventListener("click", (e) => {
 
   for (let i=0; i<siteDomains.length; i++){
     if(document.getElementById(numStr[i]).checked == true){
-      sites.push(siteDomains[i]);
+      sites.push(encodeURIComponent(siteDomains[i]));
     }
   }
 
-  const q = encodeURIComponent(searchText) + "+" + sites.join("+OR+");
+  const q = encodeURIComponent(searchText) + "+site:" + sites.join("+OR+site:");
 
   window.location.href = "https://www.google.com/search?q=" + q;
 });
@@ -100,7 +100,7 @@ document.getElementById("reset").addEventListener("click", (e) => {
 function changeSites() {
   var settingsStr = "";
   for (let i=0; i<siteDomains.length; i++){
-    if (i%3 == 0 && i != 0) settingsStr = settingsStr + "<br>";
+    if (i%3 == 0 && i != 0) settingsStr = settingsStr + "<br>&emsp;";
     settingsStr = settingsStr + "<input type='checkbox' id='"+String(i)+"'' checked='"+siteChecks[i]+"' /><label>"+siteDomains[i]+"</label>&emsp;";
   }
   document.getElementById("settings").innerHTML = settingsStr;
